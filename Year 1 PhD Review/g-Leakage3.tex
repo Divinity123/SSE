@@ -1,0 +1,50 @@
+\subsection{Data Processing Inequality on Posterior g-Vulnerability}
+In this subsection, we will introduce the readers to data processing inequality (DPI) and present our results on posterior g-vulnerability. DPI is a very useful tool to compute and bound posterior g-vulnerability as it allows us to reason about sub-channels.
+
+In classic information theory, the amount of information shared by two random variables is measured by mutual information $I(\cdot, \cdot)$. Then data processing inequality states that post-processing cannot increase information. More precisely, if $X \rightarrow Y \rightarrow Z$ is a Markov chain, then $I(X;Y) \geq I(X;Z)$. Alvim et al. \cite{6266165} proved a similar result on posterior g-vulnerability. Their result states that if $X \rightarrow Y \rightarrow Z$ is a Markov chain, then for any prior distribution $\pi$, and any gain function $g$, $V_g(\pi, X \rightarrow Y) \geq V_g(\pi, X \rightarrow Z)$.
+
+However, there is a separation between mutual information and posterior g-vulnerability. Given that $X \rightarrow Y \rightarrow Z$ is a Markov chain, we also know that the reverse chain is Markovian. Which means we can use DPI on mutual information to prove that $I(Y;Z) \geq I(X;Z)$. On the other hand, there is no natural way to compare posterior g-vulnerability between $Y \rightarrow Z$ and $X \rightarrow Z$ as the gain functions take different inputs if we wish to compute posterior g-vulnerabilities on the two channels. We give conditions on the channels and gain functions where we actually have a DPI between posterior g-vulnerabilities of the two channels.
+
+
+\begin{theorem} \label{Theorem: our DPI, simple}
+	\normalfont
+	Let $X \rightarrow Y \rightarrow Z$ be a Markov chain. Let $\pi_X$ be prior distribution on $X$ and $\pi_Y[y] = \sum_{x \in X} \pi_X[x] \channel_{X \rightarrow Y}[x,y]$ be prior distribution on $Y$. Let $\W$ be the set of allowed guesses, $g_{X}: \W \times X \rightarrow [0,1]$ and $g_{Y}: \W \times Y \rightarrow [0,1]$ be gain functions on $X$ and $Y$ respectively. If $g_{Y}(w, y) \geq \sum_{x \in X} \prob{x \mid y} g_{X}(w, X)$ for all $w \in \W, y \in Y$, then
+	\begin{equation*}
+		V_{g_{X}}(\pi_X, X \rightarrow Z) \leq V_{g_{Y}}(\pi_Y, Y \rightarrow Z).
+	\end{equation*}
+\end{theorem}
+
+
+\begin{proof}
+\begin{align*}
+  & V_{g_{X}}(\pi_X, X \rightarrow Z) \\
+= & \sum_{z \in Z} \prob{z} \max_{w \in \W} \sum_{x \in X} \prob{x \mid z} g_{X}(w, x) \\
+= & \sum_{z \in Z} \prob{z} \max_{w \in \W} \sum_{y \in Y} \sum_{x \in X} \prob{x, y \mid z} g_{X}(w, x) \\
+= & \sum_{z \in Z} \prob{z} \max_{w \in \W} \sum_{y \in Y} \sum_{x \in X} \prob{x \mid y} \prob{y \mid z} g_{X}(w, x) \\
+= & \sum_{z \in Z} \prob{z} \max_{w \in \W} \sum_{y \in Y} \prob{y \mid z} \sum_{x \in X} \prob{x \mid y} g_{X}(w, x) \\
+\leq & \sum_{z \in Z} \prob{z} \max_{w \in \W} \sum_{y \in Y} \prob{y \mid z} g_{Y}(w, y) \\
+= & V_{g_{Y}}(\pi_Y, Y \rightarrow Z).
+\end{align*}
+\end{proof}
+
+In fact, it is interesting to consider the situation where $g_{Y}(w, y) = \sum_{x \in X} \prob{x \mid y} g_{X}(w, X)$ for all $w \in \W$ and $y \in Y$. Operationally, the gain function corresponds to the case where one guesses $y$ first, and using his knowledge on the channel $X \rightarrow Y$ to invert $y$ into $x$ according to the channel matrix. Furthermore, if the equality above holds, then $V_{g_{X}}(\pi_X, X \rightarrow Z) = V_{g_{Y}}(\pi_Y, Y \rightarrow Z)$.
+
+Combining our theorem with DPI proven by Alvim et al. \cite{6266165}, we can bound posterior g-vulnerability of a channel by that of any of its sub-channels. We formalise the statement in the following proposition.
+
+
+\begin{proposition}
+	\normalfont
+	Let $X_1 \rightarrow \cdots \rightarrow X_n$ be a Markov chain. Let $\pi_{X_1}$ be prior distribution on $X_1$ and $\pi_{X_i}[y] = \sum_{x \in X_1} \pi_{X_1}[x] \channel_{X_1 \rightarrow X_i}[x,y]$ be prior distribution on $X_i$. Let $\W$ be the set of allowed guesses, $g_{X_1}: \W \times X_1 \rightarrow [0,1]$ and $g_{X_i}: \W \times X_i \rightarrow [0,1]$ be gain functions on $X_1$ and $X_i$ respectively. If $g_{X_i}(w, y) \geq \sum_{x \in X_1} \prob{x \mid y} g_{X_1}(w, X)$ for all $w \in \W, y \in X_i$, then
+	\begin{equation*}
+	V_{g_{X}}(\pi_{X_1}, X_1 \rightarrow X_n) \leq V_{g_{X_i}}(\pi_{X_i}, X_i \rightarrow X_j),
+	\end{equation*}
+	for all $1 \leq i \leq j \leq n$.
+\end{proposition}
+
+\begin{proof}
+	It follows from theorem \ref{Theorem: our DPI, simple} that $V_{g_{X}}(\pi_{X_1}, X_1 \rightarrow X_j) \leq V_{g_{X_i}}(\pi_{X_i}, X_i \rightarrow X_j)$. By DPI in \cite{6266165}, $V_{g_{X}}(\pi_{X_1}, X_1 \rightarrow X_n) < V_{g_{X}}(\pi_{X_1}, X_1 \rightarrow X_j)$, and the desired result is proven.
+\end{proof}
+
+ 
+
+

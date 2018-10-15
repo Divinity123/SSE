@@ -1,0 +1,76 @@
+\subsection{Computational Indistinguishability of Gain Functions}
+In the big picture, we will show that our definition of security game is indistinguishable from some ideal process up to the string returned by the adversary. Then we want to show that after applying the gain function $g$ and taking expectation, we get expectations to be close to each other between the real world and ideal world. However, this is not the case for any $g$. Consider the following situation. Let $X$ and $Y$ be random variables defined as follows:
+
+\begin{equation*}
+	\prob{X = x} = 2^{-n} \text{ for } x = [2^n],
+\end{equation*}
+
+\begin{equation*}
+	\prob{Y = y} = 
+	\begin{cases*}
+		0,        &\text{ for } y = 0 \\
+		2^{-n+1}, &\text{ for } y = 1\\
+		2^{-n},   &\text{ otherwise.}
+	\end{cases*}
+\end{equation*}
+
+It is easy to see that $X$ is computationally indistinguishable from $Y$. Now, we set $g(x) = 2^n \cdot \mathbbm{1}\{x=0\}$. Then $\expect{g(X)} = 1$, and $\expect{g(Y)} = 0$. The difference is by no means negligible in $n$.
+
+The reason why the phenomenon happens is because the difference between $\expect{g(X)}$ and $\expect{g(Y)}$ is statistical, and we only know that $X$ and $Y$ are computationally close. However, for well-behaved $g$, we can bound the difference between $\expect{g(X)}$ and $\expect{g(Y)}$. The result is presented as a theorem below.
+
+
+\begin{theorem}
+	Let $X$ and $Y$ be random variables and $g: X \cup Y \rightarrow \mathbb{R}$ a function. Assume that the following conditions hold:
+	\begin{enumerate}
+		\item $X$ and $Y$ are computationally indistinguishable,
+		\item $|g[X \cup Y]| \in \poly$.
+	\end{enumerate}
+	Then
+	\begin{equation*}
+	\expect{g(X)} \leq \expect{g(Y)} + |g[X \cup Y]| \cdot \sup_{z} |g(z)| \cdot \Delta_c(X,Y),
+	\end{equation*}
+	where $\Delta_c(\cdot,\cdot)$ denotes the computational distance between $X$ and $Y$.
+\end{theorem}
+
+\begin{proof}
+	We start by expressing the difference between the expectations.
+	\begin{align*}
+	& \left| \expect{g(X)} - \expect{g(Y)} \right|\\
+	= & \sum_{z \in g[X]} z \cdot \prob{g(X) = z} - \sum_{z \in g[Y]} z \cdot \prob{g(Y) = z} \\
+	= & \sum_{z \in g[X \cup Y]} z \cdot \left(\prob{g(X) = z} - \prob{g(Y) = z} \right)
+	\end{align*}
+	So in particular, there is a $z$ such that
+	\begin{equation*}
+	\left| z \cdot (\prob{g(X) = z} - \prob{g(Y) = z}) \right| \geq \frac{\left| \expect{g(X)} - \expect{g(Y)} \right|}{|g[X \cup Y]|}.
+	\end{equation*}
+	
+	We can take a weaker bound on the right hand side by replacing $z$ on the left by $\sup_{z} |g(z)|$, and we get
+	\begin{align*}
+	\left| \sup_{z} |g(z)| \cdot (\prob{g(X) = z} - \prob{g(Y) = z}) \right| & \geq \frac{\left| \expect{g(X)} - \expect{g(Y)} \right|}{|g[X \cup Y]|} \\
+	\sup_{z} |g(z)| \left| \prob{g(X) = z} - \prob{g(Y) = z} \right| & \geq \frac{\left| \expect{g(X)} - \expect{g(Y)} \right|}{|g[X \cup Y]|} \\
+	\left| \prob{g(X) = z} - \prob{g(Y) = z} \right| & \geq \frac{\left| \expect{g(X)} - \expect{g(Y)} \right|}{|g[X \cup Y]| \cdot \sup_{z} |g(z)|}
+	\end{align*}
+	
+	Since statistical difference (or variation distance) is defined as $\sum_{z \in g[X \cup Y]} |\prob{g(X)=z} - \prob{g(Y)=z}|$, we see that the quantity on the right is bounded by the statistical difference between $g(X)$ and $g(Y)$. Furthermore, as $g[X \cup Y] \in \poly$, there exists a computational adversary achieving exactly this advantage, so the quantity on the right is bounded by the computational distance between $g(X)$ and $g(Y)$. Finally, we note that the advantage in distinguishing $g(X)$ and $g(Y)$ is the same as that of $X$ and $Y$. By re-arranging the inequality, we get the desired result.
+	
+	\begin{align*}
+	\sum_{z \in g[X \cup Y]} |\prob{g(X)=z} - \prob{g(Y)=z}| & \geq \frac{\left| \expect{g(X)} - \expect{g(Y)} \right|}{|g[X \cup Y]| \cdot \sup_{z} |g(z)|} \\
+	\Delta_c(g(X), g(Y)) & \geq \frac{\left| \expect{g(X)} - \expect{g(Y)} \right|}{|g[X \cup Y]| \cdot \sup_{z} |g(z)|} \\
+	\Delta_c(X, Y) & \geq \frac{\left| \expect{g(X)} - \expect{g(Y)} \right|}{|g[X \cup Y]| \cdot \sup_{z} |g(z)|} \\
+	\expect{g(X)} & \leq \expect{g(Y)} + |g[X \cup Y]| \cdot \sup_{z} |g(z)| \cdot \Delta_c(X,Y)
+	\end{align*}
+\end{proof}
+
+
+\begin{corollary} \label{Corollary: computationally indistinguishable expectations}
+	Let $X$ and $Y$ be random variables and $g: X \cup Y \rightarrow \mathbb{R}$ a function. Assume that the following conditions hold:
+	\begin{enumerate}
+		\item $X$ and $Y$ are computationally indistinguishable,
+		\item $|g[X \cup Y]| \in \poly$,
+		\item $\sup_{z} |g(z)| \in \poly$.
+	\end{enumerate}
+	Then
+	\begin{equation}
+	\expect{g(X)} \leq \expect{g(Y)} + \negl.
+	\end{equation}
+\end{corollary}

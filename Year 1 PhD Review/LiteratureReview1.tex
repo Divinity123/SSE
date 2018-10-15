@@ -1,0 +1,117 @@
+\subsection{Previous Notions and Constructions}
+In this subsection, we will introduce the most noteworthy security notions and schemes.
+ 
+\subsubsection{Goh's Notion and Scheme}
+Goh's work \cite{EPRINT:Goh03} is one of the first to explore search on encrypted data. At that point in time, it was not clear what is a good security notion for the task, so Goh proposed his own notions, known as IND1-CKA and IND2-CKA. On a high level, Goh's notion captures the idea that given an encrypted index, the adversary should not be able to guess its content after some adaptive queries, except the number of keywords in the index. Later, he proposed a stronger notion for which the adversary should not recover the number of keywords too. We give syntax of index scheme and definition of the first notion here.
+
+\begin{definition}[Index Scheme] \label{Defintion: Index Scheme}
+	\normalfont
+	An index scheme consists of the following four algorithms.
+	\begin{itemize}
+		\item \kgen(\secparam): Given a security parameter \secparam, outputs the master private key $\key_{\text{priv}}$.
+		
+		\item \Trapdoor($\key_{\text{priv}}$, $\kw$): Given the master key $\key_{\text{priv}}$ and word $\kw$, outputs the trapdoor $\trapdoor_\kw$ for $\kw$.
+		
+		\item \buildindex(\doc, $\key_{\text{priv}}$): Given a document $\doc$ and the master key $\key_{\text{priv}}$, outputs the index $\idx_\doc$.
+		
+		\item \searchindex($\trapdoor_\kw$, $\idx_\doc$): Given the trapdoor $\trapdoor_\key$ for word $\kw$ and the index $\idx_\doc$ for document $\doc$, outputs 1 if $\kw \in \doc$ and 0 otherwise.
+	\end{itemize}
+\end{definition}
+
+
+
+\begin{definition}[IND-CKA]
+	\normalfont
+	Let (\kgen, \Trapdoor, \buildindex, \searchindex) be an index scheme. We use the following game between a challenger $\challenger$ and an attacker $\adversary$ to define semantic security against an adaptive chosen keyword attack (IND-CKA).
+	\begin{itemize}
+		\item \textbf{Setup.} The challenger $\challenger$ creates a set $\simer$ of $q$ words and gives this to the adversary $\adversary$. $\adversary$ chooses a number of subsets from $\simer$. This collection of subsets is called $\simer^*$ and is returned to $\challenger$. Upon receiving $\simer^*$, $\challenger$ runs \kgen to generate the master key $\key_{\text{priv}}$, and for each subset in $\simer^*$, $\challenger$ encodes its contents into an index using \buildindex. Finally, $\challenger$ sends all indexes with their associated subsets to $\adversary$.
+		
+		\item
+\textbf{Queries.} $\adversary$ is allowed to query $\challenger$ on a word $x$ and receive the trapdoor $\trapdoor_x$ for $x$. With $\trapdoor_x$, $\adversary$ can invoke \searchindex on an index $\idx$ to determine if $x \in \idx$.
+		
+		\item \textbf{Challenge.} After making some $\Trapdoor$ queries, $\adversary$ decides on a challenge by picking a nonempty subset $V_0 \in \simer^*$, and generating another non-empty subset $V_1$ from $\simer$ such that $|V_0 - V_1| \neq 0$, $|V_1 - V_0| \neq 0$, and the total length of words in $V_0$ is equal to that in $V_1$. Lastly, $\adversary$ must not have queried $\challenger$ for the trapdoor of any word in $V_0 \triangle V_1$.
+		
+		Next, $\adversary$ gives $V_0$ and $V_1$ to $\challenger$ who chooses $b \sample \{0,1\}$, invokes \buildindex($V_b$, $\key_{\text{priv}}$) to obtain the index $\idx_{V_b}$ for $V_b$, and returns $\idx_{V_b}$ to $\adversary$. The challenge for $\adversary$ is determine $b$. After the challenge is issued, $\adversary$ is not allowed to query $\challenger$ for the trapdoors of any word $x \in V_0 \triangle V_1$.
+		
+		\item \textbf{Response.} $\adversary$ eventually outputs a bit $b'$, representing its guess for $b$. The advantage of $\adversary$ in winning this game is defined as $\advantage_\adversary = |\prob{b = b'} - 1/2|$, where the probability is over $\adversary$ and $\challenger$'s coin tosses.
+	\end{itemize}
+
+	We say that an adversary $\adversary$ $(t, \epsilon, q)$-breaks an index if $\advantage_\adversary$ is at least $\epsilon$ after $\adversary$ takes at most $t$ time and makes $q$ trapdoor queries to the challenger. We say that $\idx$ is an $(t, \epsilon, q)$-IND-CKA secure index if no adversary can $(t, \epsilon, q)$-break it.
+\end{definition}
+
+
+Goh's construction relies on Bloom filter. If one wants to build an unencrypted search index with Bloom filter, the easiest way is to just use the Bloom filter with the same hash keys for each document and insert keywords in the most natural way. This is not secure as it is possible to infer similarity of document contents by simply looking at the Bloom filters. More recently, Pouliot and Wright \cite{CCS:PouWri16} have shown that it is possible to recover keywords from Bloom filters with high accuracy. One also has to ensure that queries do not reveal underlying keywords. To address the challenges above, Goh suggests to use one way function to mask the keywords, and use one way function again on the masked keywords and documents so that Bloom filters depend on the documents themselves. To search, the user sends the server masked keywords and the server is able to check if the underlying keyword is in each of the document.
+
+
+
+
+\subsubsection{Chang and Mitzenmacher's Notion and Scheme}
+Chang and Mitzenmacher \cite{ACNS:ChaMit05} approached the problem in a slightly different way. They propose to use a simulation-based security notion. For simplicity, we ignore some less important constraints in their definition and focus on syntax and security requirement. We define Privacy Preserving Keyword Searches on Remote Encrypted Data (PPSED) and its security as follows.
+
+\begin{definition}[Syntax and Security of PPSED]
+	\normalfont
+	PPSED is a multi-round protocol between a remote file server $\simer$ and a user $\mathcal{U}$. $\simer$ has a set of $n$ encrypted files $\xi = \{\mathcal{E}_1(m_1), \mathcal{E}_2(m_2), \cdots, \mathcal{E}_n(m_n) \}$ where for each $i \in [n]$, $\mathcal{E}_i$ is an encryption function and $m_i$ is a file. The user $\mathcal{U}$ has decryption algorithms $\mathcal{D}_1, \mathcal{D}_2, \cdots, \mathcal{D}_n$ such that $\mathcal{D}_1(\mathcal{E}_1(m_1)) = m_1, \mathcal{D}_2(\mathcal{E}_2(m_2)) = m_2, \cdots, \mathcal{D}_n(\mathcal{E}_n(m_n)) = m_n$. Moreover, in each round $j \in \mathbb{N}$, $\mathcal{U}$ prepares a keyword $w_j \in \{0,1\}^*$. An implementation of PPSED with security parameter \secparam must satisfy the following:
+	
+	\begin{enumerate}
+		\item Correctness: In round $j$, for $i \in [n]$, if $w_j$ is a keyword of $m_i$, $\mathcal{U}$ can obtain $\mathcal{E}_i(m_i)$.
+		
+		\item Security requirement: For $k \in \mathbb{N}$, let $C_k$ be all the communications $\simer$ receives from $\mathcal{U}$ before round $k$, and $C_k^* = \{\xi, Q_0 \equiv \phi, Q_1, \cdots, Q_{k-1} \}$, where for each $j \in [k-1]$, $Q_j$ is an $n$-bit string such that for $i \in [n]$, $Q_j[i] = 1$ if and only if $w_j$ is a keyword of $m_i$.
+		
+		
+		For $k \in \mathbb{N}$, for any PPT algorithm $\adversary$, any $\Delta_k = \{m_1, \cdots, m_n, w_0 \equiv \phi, w_1, \cdots, w_{k-1} \}$, any function $h$, there is a PPT algorithm $\adversary^*$ such that the following value is negligible in \secparam:
+		\begin{equation*}
+			\left| \prob{\adversary(C_k, \secparam) = h(\Delta_k)} - \prob{\adversary^*(C_k^*, \secparam) = h(\Delta_k)} \right|.
+		\end{equation*}
+	\end{enumerate} 
+\end{definition}
+
+Intuitively, Chang and Mitzenmacher's security notion captures the idea that whatever computable about $\Delta_k$ given $C_k$ can also be computed from $C_k^*$.
+
+Their construction is very straight forward. For each document, they are going to keep an index of length $d$, where $d$ is some constant. Let $P_j$ be the pseudo-random permutation used to encrypt index of file $m_j$, then if $w_i$ is a keyword in $m_j$, $P_j(i)$-th position of the index is marked as one, otherwise it is marked as 0. The index is further masked by a pseudo-random function depending on the file and the keyword.
+
+
+
+
+\subsubsection{Curtmola et al.'s Notion and Scheme}
+Curtmola et al. \cite{CCS:CGKO06} argues that the previous two notions are insufficient in protecting user privacy. The main problem is that both schemes do not require the trapdoor to be secure, which means everything about the database can be leaked from queries even though the scheme is proven to be secure under the two notions. In their own notions, they fix the problem by requiring the encrypted files, encrypted index and trapdoors to be secure at the same time.
+
+They make separation between non-adaptive and adaptive security of searchable symmetric encryption (SSE). In the non-adaptive setting (IND-CKA1), the adversary has to choose all his queries ahead of their executions, while in the adaptive setting (IND-CKA2), he can choose queries depending on the previous queries and their responses. They give indistinguishability-based definition and simulation-based definition in both settings, and prove that in each setting, indistinguishability-based definition is equivalent to simulation-based definition. We will refer non-adaptive simulation-based definition by them as SS-CKA.
+
+Syntax of SSE is the same as that of index scheme so we invite interested readers to refer to definition \ref{Defintion: Index Scheme}. Security notions proposed by Curtmola et al. are parametrised by trace of history, later known as leakage functions. History ($H$) is the collection of documents and past queries, and trace ($Tr$) is whatever the adversary learns throughout the execution of the protocol. To define security, we also need to define the view of the adversary. View ($V_\key$) under secret key $\key$ is everything the adversary sees during the execution of the protocol. For simplicity, we will only give non-adaptive security notions here. Adaptive notions can be easily derived from there.
+
+\begin{definition}[Non-Adaptive Indistinguishability Security for SSE]
+	\normalfont
+	A SSE scheme is secure in the sense of non-adaptive indistinguishability if for all $q \in \mathbb{N}$, for all (non-uniform) probabilistic polynomial-time adversaries $\adversary = (\adversary_1, \adversary_2)$, for all polynomials $p$ and all sufficiently large $k$:
+	\begin{equation*}
+		\prob{b' = b; \key \gets \kgen(\secparam); (H_0, H_1, \state) \gets \adversary_1; b \sample \{0,1\}; b' \gets \adversary_2(V_K(H_b), \state)} < \frac{1}{2} - \frac{1}{p(k)},
+	\end{equation*}
+	where $(H_0, H_1)$ are histories over $q$ queries such that $Tr(H_0) = Tr(H_1)$, where $\state$ is a polynomially bounded string that captures $\adversary_1$'s state, and the probability is taken over the internal coins of $\kgen, \adversary$, and the underlying $\buildindex$ algorithm.
+\end{definition}
+
+\begin{definition}[Non-Adaptive Semantic Security for SSE]
+	\normalfont
+	A SSE scheme is non-adaptively semantically secure if for all $q \in \mathbb{N}$ and for all (non-uniform) probabilistic polynomial-time adversaries $\adversary$, there exists a (non-uniform) probabilistic polynomial-time algorithm (the simulator) $\simer$ sucht aht for all traces $Tr_q$ fo length $q$, all polynomially samplable distributions $H_q$ over $\{ H_q \in 2^{2^\Delta} \times \Delta^q: Tr(H_q) = Tr_q \}$ (i.e., the set of histories with trace $Tr_q$), all functions $f: \{0,1\}^m \rightarrow \{0,1\}^{l(m)}$ (where $m = |H_q|$ and $l(m) = poly(m)$), all polynomials p and sufficiently large k:
+	\begin{equation*}
+		| \prob{\adversary(V_\key(H_q)) = f(H_q)} - \prob{\simer(Tr(H_q)) = f(H_q)} | < \frac{1}{p(k)},
+	\end{equation*}
+	where $H_q \sample \mathcal{H}_q, \key \sample \kgen(\secparam)$, and the probabilities are taken over $\mathcal{H}_q$ and the internal coins of $\kgen$, $\adversary$, $\simer$ and teh underlying $\buildindex$ algorithm.
+\end{definition}
+
+The security notions captures the idea that the adversary learns at most as much as the trace. In the paper, trace is defined as the collection of document identifiers, length of documents and access pattern. Curtmola et al. prove that non-adaptive indistinguishability security is equivalent to non-adaptive semantic security. Similarly, they show adaptive indistinguishability security is equivalent to adaptive semantic security. The most popular notion in the literature is adaptive semantic security.
+
+Curtmola et al.'s scheme is different from the previous ones as it is based on inverted index. An inverted index is an index data structure storing a mapping from keywords to the list of documents containing it. Such structure makes searching faster as one no longer has to check queried keyword on all documents but a secure construction with inverted index is more complicated. To begin with, we imagine we have an inverted index to search for documents containing each of the keywords. This data structure by itself is apparently insecure as the keywords are left in plain, and the server can learn the number of occurrence of each keyword with no effort. The idea is to shuffle the entire inverted index into a single array in a way such that the server can retrieve the set of documents for each keywords, but only with the help of the client. To achieve this, for each keyword, the client inserts the corresponding list of document identifiers into random locations of the array, specified by a pseudo-random permutation and a counter. The document identifiers inserted are coupled with the address of the next document identifier so the server can access all the document identifiers for a given keyword like a virtual linked list. Of course, to prevent the server from seeing the contents, the array is encrypted using IND-CPA secure scheme. At the same time, the client has to build a lookup table to specify the first location in the array for each keyword. He simply puts this information into an array and mask the entries with some one way function applied to the keywords.
+
+
+
+
+\subsubsection{Kurosawa and Ohtaki's Notion}
+Kurosawa and Ohtaki \cite{FC:KurOht12} studied the problem of verifiable SSE. Verifiable SSE is essentially SSE with the additional functionality that the user can verify if results returned by the queries are correct. As we are only interested in basic SSE, we will not derail into how to construct a verifiable SSE. However, the notion proposed by Kurosawa and Ohtaki is closely related to that of basic SSE. Their notion of security (privacy of verifiable SSE in their words) is identical to that of \cite{CCS:CGKO06}, except that their definition is in black-box model, meaning that they require a single simulator to work for all adversaries. Curiously, even though most papers use the definition in \cite{CCS:CGKO06}, the proofs are done in the black-box model, so security of those schemes is stronger than what is claimed. It is important that this is the case, as our security notion relies on black-box model.
+
+
+
+
+\subsubsection{Other Notions}
+Simulation-based security notion with leakage \cite{CCS:CGKO06} is by far the most popular notion in the literature. Most recent works use variants of it. Chase and Kamara \cite{AC:ChaKam10} modified the notion by asking the adversary in the game to output a bit. Works later \cite{CCS:KamPapRoe12, FC:KamPap13, NDSS:CJJJKR14} further generalised the notion to allow for multiple leakage functions and the adversary engages with the system in the random oracle model.
+
+
+

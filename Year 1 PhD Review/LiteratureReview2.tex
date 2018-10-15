@@ -1,0 +1,39 @@
+\subsection{Attacks on SSE}
+Attacks on SSE start by assuming some adversarial power, for example, some of the attacks only require a passive adversary while the others require the adversary to inject files to the encrypted database. In addition, some attacks rely on auxiliary information the adversary has on the data. The most common auxiliary information used are frequency of keywords and frequency of co-occurrence of keywords. There are two main attack goals. First being to recover keywords from their encryptions. Second being to recover queries from the encrypted queries (usually come as search tokens). In the following literature review, we organise the attacks by their techniques, namely file injection attacks, frequency-based attacks, and co-occurrence-based attacks.
+
+
+
+\subsubsection{File Injection Attacks}
+Zhang et al. \cite{EPRINT:ZhaKatPap16} studied power of file injection attack on recovering queries. The attack assumes that the underlying SSE leaks access pattern. The basic attack, which they call binary-search attack inject files with keywords crafted in a way such that the adversary can tell which keyword is queried by looking at access pattern on the injected files. To do so, one only need to inject number of files equal to logarithm of the number of keywords, as it gives enough bits to encode which keyword has been queried. The authors modified binary-search attack to show that simple countermeasure such as limiting the number of keywords per document does not alleviate security vulnerability. With partial knowledge on the database, the authors demonstrated that file injection attack can be mounted very efficiently and accurately.
+
+
+
+
+\subsubsection{Frequency-based Attacks}
+Naveed et al. \cite{CCS:NavKamWri15} demonstrated vulnerability of encrypted databases using deterministic encryption and order-preserving encryption. Such encryption schemes are known as legacy schemes as they are fully compatible with implementations of database programs such as SQL. As deterministic encryption and order-preserving encryption leak frequency, the adversary is able to observe frequency of encrypted keywords. Given some prior knowledge on the frequency of keywords, the adversary can match encrypted keywords to the unencrypted counterparts by matching the frequencies. Naveed et al. studied different ways of doing this and their attacks are able to recover majority of encrypted medical records in their experiment. Wright and Pouliot \cite{EPRINT:WriPou17} studied the problem from statistical point of view. They suggested a framework to perform statistical attacks on the encryption schemes, and demonstrated its usefulness in some attacks.
+
+
+
+
+\subsubsection{Co-occurrence-based Attacks}
+Frequency-based attacks works well if the prior knowledge on the frequencies are accurate. When this is not the case, such attacks can struggle in terms of attack accuracy. Islam et al. \cite{NDSS:IslKuzKan12} are one of the first to look at co-occurrence of keywords. In simple terms, the adversary is assumed to have prior knowledge on frequencies of occurrences of pairs of keywords, and his goal is to recover encrypted queries by using this information. We assume that the underlying SSE leaks access pattern, so that the adversary can construct the co-occurrence matrix of pairs of encrypted queries, where each entry in the matrix represent the number of documents returned by the corresponding queries in common. The goal of the adversary then is to fit this co-occurrence matrix with the co-occurrence matrix he generates from his prior knowledge. By this, we mean that the adversary has to find the best assignment of keywords to encrypted queries so that the distance between the two co-occurrence matrices is the smallest. The optimisation problem itself is known to be NP-hard, so Islam et al. suggested to use simulated annealing to find an approximate solution. Their optimisation procedure is later improved by Pouliot and Wright in \cite{CCS:PouWri16} using graph-matching algorithms. In the same paper, Pouliot and Wright have shown that Bloom filter based schemes can be as vulnerable to co-occurrence-based attacks as deterministic encryption. Cash et al. \cite{CCS:CGPR15} proposed a different attack known as count attack which works better than the other two attacks but it assumes that the adversary knows the co-occurrence of keywords exactly.
+
+
+
+%TODO: citation for volume attack
+\subsubsection{Other Attacks}
+Although not attacks on keyword search schemes, it is worth to mention the following attacks here. \cite{CCS:KKNO16, EPRINT:LacMinPat17} are attacks on order-preserving and order-revealing encryption. The leakage in the attacks are assumed to be access pattern and by simply manipulating with sets of documents, the authors are able to recover keywords for all documents. Grubbs et al.\footnote{Their paper has not been published yet so there is no proper citation.} demonstrates that leaking volume of range queries is already detrimental enough to the schemes as one is able to recover frequency of each value in the range.
+
+
+
+
+
+
+
+
+
+
+
+
+
+

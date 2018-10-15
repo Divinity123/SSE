@@ -1,0 +1,69 @@
+\subsection{Motivation}
+In information theory, researchers model information flow as a channel, and one can define quantitatively how much information is leaked through the channel. In the same vein, we can think of SSE as a channel and try to measure how much of the underlying database is leaked. The classic measure of information leakage is the min-entropy model \cite{mathai1975basic}. Recently, Alvim et al. \cite{6266165} proposed another measure of information leakage called g-leakage. In g-leakage, the adversary is awarded differently for each guess he makes via a gain function chosen by the user, and this is able to model many operational scenarios. In terms of SSE, the adversary does not need to guess the entire database to do harm with it, so g-leakage can be applied to SSE schemes to analyse their security. Maybe not so surprisingly, we found that our security notion can be modelled and computed using g-leakage. In this section, we will first introduce min-entropy and g-leakage to the readers. Then we will show the equivalence between g-leakage and our security notion. After that, we will prove a few results that are not seen in the original paper.
+
+
+
+\subsection{Introduction to g-leakage}
+\begin{definition}[Information Channel]
+	A channel is a triple $(\X, \Y, \channel)$, where $\X$ and $\Y$ are finite sets and $\channel$ is a channel matrix, an $|\X| \times |\Y|$ matrix whose entries are between 0 and 1 and whose rows each sum to 1. 
+\end{definition}
+
+
+\begin{definition}[Vulnerabilities]
+	Given prior distribution $\pi$ on $\X$ and channel $C$, the \textit{prior vulnerability} is given by:
+	\begin{equation}
+	V(\pi) = \max_{x \in \X} \pi [x],
+	\end{equation}
+	
+	and the \textit{posterior vulnerability} is given by:
+	\begin{equation}
+	V(\pi, \channel) = \sum_{y \in \Y} \max_{x in \X} \pi [x] \channel [x,y].
+	\end{equation}
+\end{definition}
+
+
+\begin{definition}[Leakage and Capacity]
+	We define \textit{min-entropy leakage} $\mathcal{L}(\pi, \channel)$ and \textit{min-capacity} $\mathcal{ML}(\channel)$ to be:
+	\begin{align}
+	\mathcal{L}(\pi, \channel) &= - \log V(\pi) + \log V(\pi, \channel) = \log \frac{V(\pi, \channel)}{V(\pi)}, \\
+	\mathcal{ML}(\channel) &= \sup_{\pi} \mathcal{L}(\pi, \channel).  
+	\end{align}
+\end{definition}
+
+
+G-leakage is different from the classic definition by allowing the adversary to guess part of $x$ from observation $y$, and his gain is measured by a gain function $g$.
+
+
+\begin{definition}[Gain function]
+	Given a set $\X$ of possible secrets and a finite, non-empty set $\mathcal{W}$ of allowable guesses, a gain function is a function $g: \mathcal{W} \times \X \rightarrow [0,1]$.
+\end{definition}
+
+There is no restriction on how the gain function behaves from this definition. In particular, it is possible to set the gain to be 0 even if the adversary makes a perfect guess from what he has observed.
+
+
+\begin{definition}[Prior g-vulnerability]
+	Given gain function g and prior $\pi$, the \textit{prior g-vulnerability} is
+	\begin{equation}
+	V_{g}(\pi)=\max_{w\in {\cal W}}\displaystyle\sum_{x\in {\cal X}}\pi[x]g(w, x).
+	\end{equation}
+\end{definition}
+
+
+\begin{definition}[Posterior g-vulnerability]
+	Given gain function g, prior $\pi$, and channel C, the \textit{posterior g-vulnerability} is
+	\begin{equation}
+	V_{g}(\pi, \channel) = \sum_{y \in {\Y}} \max_{w \in {\mathcal{W}}} \sum_{x \in {\X}} \pi [x] \channel[x, y] g(w, x).
+	\end{equation}
+\end{definition}
+
+
+\begin{definition}[g-leakage and g-capacity]
+	\textit{G-leakage} $\mathcal{L}_{g} (\pi, \channel)$ and \textit{g-capacity} $\mathcal{ML}_{g} (\channel)$ are defined as:
+	\begin{align*}
+	\mathcal{L}_{g} (\pi, \channel) & = - \log V_{g}(\pi) + \log V_{g}(\pi, \channel) = \log \frac{V_{g}(\pi, \channel)}{V_{g}(\pi)}, \\
+	\mathcal{ML}_{g}(\channel) &= \sup_{\pi} \mathcal{L}_{g}(\pi, \channel). 
+	\end{align*} 
+\end{definition}
+
+
+In application to SSE, we do not find prior g-vulnerability, g-leakage and g-capacity to be useful. The reason is because g-vulnerability measures the adversarial knowledge before observing the encrypted database, but it has no operational meaning in terms of attacks. G-leakage measures of how much more information one obtains after observing the outcome, but the measure is in terms of logarithm of ratios between posterior g-vulnerability and prior g-vulnerability. This does not directly reflect how much the adversary learns from the attack. Finally, g-capacity is supremum of g-leakage over all distributions $\pi$, but for databases, the distribution is much more structured. On the other hand, we will show equivalence between posterior g-vulnerability and our security notion, so results on posterior g-vulnerability can be used to reason about security of the underlying SSE scheme.

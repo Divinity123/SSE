@@ -1,0 +1,38 @@
+\subsection{Syntax of SSE}
+In this section, we define syntax of searchable encrypted database and then refine it for keyword search.
+
+
+\subsubsection{Database and Encrypted Database}
+We define database $\db$ in the most general setting to be $\db \in \{0,1\}^{*}$. The database supports queries via function $\QueryFunction: \DB \times \Query \rightarrow \DB \times \Response$, where $\Query$ is a set of queries on the database and $\Response$ is some response. 
+
+Similarly, the encrypted database $\edb$ is  $\edb \in \{0,1\}^{*}$. The encrypted database supports encrypted queries via function $\EQueryFunction: \EDB \times \EQuery \rightarrow \EDB \times \EResponse$.
+
+
+\subsubsection{Functions between Database and Encrypted Database}
+A mechanism for searchable encrypted database supports the following operations:
+\begin{itemize}
+	\item \textbf{Key generation:} $\kgen: \secparam \rightarrow \Key$. The key generation algorithm takes in the security parameter and outputs keys used for the mechanism.
+	
+	\item \textbf{Initialisation:} $\Initialisation: \secparam \times \Key \rightarrow \CState$. The initialisation function takes in the security parameter and the key, and outputs the initial state of the client.
+	
+	\item \textbf{Encryption:} $\enc: \secparam \times \Key \times \DB \times \CState \rightarrow \EDB \times \CState$. The encryption scheme takes in security parameter, a key, a database and the state of the client, and produce an encrypted database and a state.
+	
+	\item \textbf{Decryption:} $\dec: \secparam \times \Key \times \EDB \times \CState \rightarrow \DB$. The decryption scheme takes in security parameter, a key,an encrypted database and a state, and produce a database.
+	
+	\item \textbf{Query:} $\QueryFunction: \DB \times \Query \rightarrow \DB \times \Response$. A query function takes in a database and a query and outputs a response.
+	
+	\item \textbf{Query encryption:} $\EncQ: \Key \times \Query \times \CState \rightarrow \EQuery \times \CState$. The query encryption function takes in a key and a query, and produces an encrypted query and a state.
+	
+	\item \textbf{Encrypted queries:} $\EQueryFunction:\EDB \times \EQuery \rightarrow \EDB \times \EResponse$. An encrypted query takes an encrypted database and an encrypted query, and returns an encrypted database and an encrypted response.
+	
+	\item \textbf{Response decryption:} $\DecResponse: \Key \times \EResponse \times \CState \rightarrow \Response \times \CState$. The response decryption function takes a key, an encrypted response, and a state, and returns a response and a state.
+\end{itemize}
+When the security parameter and the key are obvious, we may omit them from the notation. We may abuse $\enc(\cdot)$ and $\dec(\cdot)$ as encryption and decryption functions on keywords, for example, $\ekw = \enc(\kw)$.
+
+
+\subsubsection{Refinement to Keyword Search}
+A database $\db$ for keyword search consists of a set of keywords $\KWset$ and a set of files $\File$, so $\db = (\KWset, \File)$. Each file $\file \in \File$ contains some keywords specified by the user. For simplicity of notation, we denote keywords associated to a file $\kwset = \KWset(\file)$. Since we are talking about encryptions for keyword search, searching of keywords must be one of the supported query types. In terms of notation, we may write $\KWset(\db)$ to mean the set of keywords associated to the database $\db$, i.e. $\KWset(\db) = \cup_{\file \in \db} \KWset(\file)$.
+
+An encrypted database $\edb$ for keyword search consists of a set of encrypted keywords $\EKWset$, a set of encrypted files $\EFile$ and an encrypted index $\EIndex$ for encrypted queries, so $\edb = (\EKWset, \EFile, \EIndex)$. Each encrypted file $\efile \in \EFile$ contains some encrypted keywords which are encryptions of corresponds keywords for the plain files. Similar to unencrypted databases, we denote encrypted keywords associated to an encrypted file by $\ekwset = \EKWset(\efile)$. Encrypted keyword search must be one of the supported encrypted query types. In terms of notation, we may write $\EKWset(\edb)$ to mean the set of keywords associated to the encrypted database $\edb$, i.e. $\EKWset(\edb) = \cup_{\efile \in \edb} \EKWset(\efile)$.
+
+

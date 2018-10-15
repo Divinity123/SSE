@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\setlength\parindent{0pt}
+\setlength{\parskip}{1em}
+
+% packages
+\usepackage{float, amsmath, amsthm, bbm, amsfonts, mathtools, url, tikz, comment}
+\usepackage [n, operators, sets, adversary, landau, probability, notions, logic, ff, mm, primitives, events, complexity, asymptotics] {cryptocode}
+
+\input{Notations}
+
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}[definition]{Lemma}
+\newtheorem{theorem}[definition]{Theorem}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
+
+
+\begin{document}
+\section{Introduction}
+\input{Introduction2}
+
+
+\section{Literature Review}
+\input{LiteratureReview1}
+\input{LiteratureReview2}
+\input{LiteratureReview3}
+
+
+\section{Our Definitions}
+\input{OurDefinitions1}
+\input{OurDefinitions2}
+
+
+\section{Preliminary Results}
+\input{PreliminaryResults1}
+\input{PreliminaryResults2}
+\input{PreliminaryResults3}
+
+
+\section{Results on g-vulnerability}
+\input{g-Leakage1}
+\input{g-Leakage2}
+\input{g-Leakage3}
+
+
+\section{Future Work}
+\input{FutureWork}
+
+
+% biblography
+\bibliographystyle{plain}
+\bibliography{abbrev0,crypto,additional_citations}{}
+\end{document}

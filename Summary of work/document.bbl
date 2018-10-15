@@ -1,0 +1,116 @@
+\begin{thebibliography}{10}
+
+\bibitem{6266165}
+M.~S. Alvim, K.~Chatzikokolakis, C.~Palamidessi, and G.~Smith.
+\newblock Measuring information leakage using generalized gain functions.
+\newblock In {\em 2012 IEEE 25th Computer Security Foundations Symposium},
+  pages 265--279, June 2012.
+
+\bibitem{EPRINT:Goh03}
+Eu-Jin Goh.
+\newblock Secure indexes.
+\newblock Cryptology ePrint Archive, Report 2003/216, 2003.
+\newblock \url{http://eprint.iacr.org/2003/216}.
+
+\bibitem{ACNS:ChaMit05}
+Yan-Cheng Chang and Michael Mitzenmacher.
+\newblock Privacy preserving keyword searches on remote encrypted data.
+\newblock In John Ioannidis, Angelos Keromytis, and Moti Yung, editors, {\em
+  ACNS 05: 3rd International Conference on Applied Cryptography and Network
+  Security}, volume 3531 of {\em Lecture Notes in Computer Science}, pages
+  442--455, New York, NY, USA, June~7--10, 2005. Springer, Heidelberg, Germany.
+
+\bibitem{CCS:CGKO06}
+Reza Curtmola, Juan~A. Garay, Seny Kamara, and Rafail Ostrovsky.
+\newblock Searchable symmetric encryption: improved definitions and efficient
+  constructions.
+\newblock In Ari Juels, Rebecca~N. Wright, and {Sabrina De Capitani di}
+  Vimercati, editors, {\em ACM CCS 06: 13th Conference on Computer and
+  Communications Security}, pages 79--88, Alexandria, Virginia, USA,
+  October~30~--~November~3, 2006. {ACM} Press.
+
+\bibitem{AC:ChaKam10}
+Melissa Chase and Seny Kamara.
+\newblock Structured encryption and controlled disclosure.
+\newblock In Masayuki Abe, editor, {\em Advances in Cryptology --
+  {ASIACRYPT}~2010}, volume 6477 of {\em Lecture Notes in Computer Science},
+  pages 577--594, Singapore, December~5--9, 2010. Springer, Heidelberg,
+  Germany.
+
+\bibitem{EPRINT:KamPapRoe12}
+Seny Kamara, Charalampos Papamanthou, and Tom Roeder.
+\newblock Dynamic searchable symmetric encryption.
+\newblock Cryptology ePrint Archive, Report 2012/530, 2012.
+\newblock \url{http://eprint.iacr.org/2012/530}.
+
+\bibitem{FC:KamPap13}
+Seny Kamara and Charalampos Papamanthou.
+\newblock Parallel and dynamic searchable symmetric encryption.
+\newblock In Ahmad-Reza Sadeghi, editor, {\em FC 2013: 17th International
+  Conference on Financial Cryptography and Data Security}, volume 7859 of {\em
+  Lecture Notes in Computer Science}, pages 258--274, Okinawa, Japan,
+  April~1--5, 2013. Springer, Heidelberg, Germany.
+
+\bibitem{NDSS:CJJJKR14}
+David Cash, Joseph Jaeger, Stanislaw Jarecki, Charanjit~S. Jutla, Hugo
+  Krawczyk, Marcel-Catalin Rosu, and Michael Steiner.
+\newblock Dynamic searchable encryption in very-large databases: Data
+  structures and implementation.
+\newblock In {\em {ISOC} Network and Distributed System Security Symposium --
+  {NDSS}~2014}, San Diego, CA, USA, February~23--26, 2014. The Internet
+  Society.
+
+\bibitem{FC:KurOht12}
+Kaoru Kurosawa and Yasuhiro Ohtaki.
+\newblock {UC}-secure searchable symmetric encryption.
+\newblock In Angelos~D. Keromytis, editor, {\em FC 2012: 16th International
+  Conference on Financial Cryptography and Data Security}, volume 7397 of {\em
+  Lecture Notes in Computer Science}, pages 285--298, Kralendijk, Bonaire,
+  February~27~--~March~2, 2012. Springer, Heidelberg, Germany.
+
+\bibitem{CCS:NavKamWri15}
+Muhammad Naveed, Seny Kamara, and Charles~V. Wright.
+\newblock Inference attacks on property-preserving encrypted databases.
+\newblock In Indrajit Ray, Ninghui Li, and Christopher Kruegel:, editors, {\em
+  ACM CCS 15: 22nd Conference on Computer and Communications Security}, pages
+  644--655, Denver, CO, USA, October~12--16, 2015. {ACM} Press.
+
+\bibitem{NDSS:IslKuzKan12}
+Mohammad~Saiful Islam, Mehmet Kuzu, and Murat Kantarcioglu.
+\newblock Access pattern disclosure on searchable encryption: Ramification,
+  attack and mitigation.
+\newblock In {\em {ISOC} Network and Distributed System Security Symposium --
+  {NDSS}~2012}, San Diego, CA, USA, February~5--8, 2012. The Internet Society.
+
+\bibitem{CCS:CGPR15}
+David Cash, Paul Grubbs, Jason Perry, and Thomas Ristenpart.
+\newblock Leakage-abuse attacks against searchable encryption.
+\newblock In Indrajit Ray, Ninghui Li, and Christopher Kruegel:, editors, {\em
+  ACM CCS 15: 22nd Conference on Computer and Communications Security}, pages
+  668--679, Denver, CO, USA, October~12--16, 2015. {ACM} Press.
+
+\bibitem{CCS:PouWri16}
+David Pouliot and Charles~V. Wright.
+\newblock The shadow nemesis: Inference attacks on efficiently deployable,
+  efficiently searchable encryption.
+\newblock In Edgar~R. Weippl, Stefan Katzenbeisser, Christopher Kruegel,
+  Andrew~C. Myers, and Shai Halevi, editors, {\em ACM CCS 16: 23rd Conference
+  on Computer and Communications Security}, pages 1341--1352, Vienna, Austria,
+  October~24--28, 2016. {ACM} Press.
+
+\bibitem{10.1007/978-3-642-54792-8_5}
+Annabelle McIver, Carroll Morgan, Geoffrey Smith, Barbara Espinoza, and Larissa
+  Meinicke.
+\newblock Abstract channels and their robust information-leakage ordering.
+\newblock In Mart{\'i}n Abadi and Steve Kremer, editors, {\em Principles of
+  Security and Trust}, pages 83--102, Berlin, Heidelberg, 2014. Springer Berlin
+  Heidelberg.
+
+\bibitem{7536368}
+M.~S. Alvim, K.~Chatzikokolakis, A.~McIver, C.~Morgan, C.~Palamidessi, and
+  G.~Smith.
+\newblock Axioms for information leakage.
+\newblock In {\em 2016 IEEE 29th Computer Security Foundations Symposium
+  (CSF)}, pages 77--92, June 2016.
+
+\end{thebibliography}

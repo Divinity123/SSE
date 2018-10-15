@@ -1,0 +1,61 @@
+\subsection{Bounding Expectations of Our Games with g-vulnerability}
+In this section, we will show how to bound expectations of our games with g-vulnerability.
+
+\begin{theorem}[Posterior g-Vulnerability and Real Game]
+	\normalfont
+	Let $\secparam$ be the security parameter of some SSE scheme, and $\Pi$ be the prior distribution on databases and auxiliary information. Let $\pi$ be prior distribution on databases induced by $\Pi$. Let $\X = \{ (\db, \aux) \mid (\db, \aux) \in \Pi \}$ and $\Y = \{(\edb, \aux) \mid (\db, \aux) \in \Pi, \key \sample \kgen(\secparam), \edb \gets \enc(\secparam, \key, \db) \}$. Let $\channel: \X \times \Y \rightarrow [0,1]$ be the natural channel matrix induced between $\X$ and $\Y$, i.e. $\channel(x,y) = \prob{\enc(\pi_1(x)) = \pi_1(y)}$, where $\pi_1(\cdot)$ is a projection onto the first coordinate, and the probability is taken over all possible keys. Let $\W$ be the set of allowed guesses, and $g:\W \times \DB \rightarrow [0,1]$ be a gain function. Then
+	
+	\begin{equation*}
+		\sup_{\adversary} \expect{\text{Real}_{\Pi, \adversary}^{g}(\secparam)} \leq V_{g}(\pi, \channel).
+	\end{equation*}
+\end{theorem}
+
+
+\begin{proof}
+\begin{align}
+  & \sup_{\adversary} \expect{\text{Real}_{\Pi, \adversary}^{g}(\secparam)} \label{Proof: g-vulnerability and real, equation 1} \\
+= & \sup_{\adversary} \mathbb{E}_{\Pi,\adversary}[g(w, \db)] \label{Proof: g-vulnerability and real, equation 2} \\
+= & \sup_{\adversary} \mathbb{E}_{\Y}\left[ \mathbb{E}_{\Pi,\adversary}[g(w, \db) \mid (\edb, \aux)] \right] \label{Proof: g-vulnerability and real, equation 3} \\
+= & \sup_{\adversary} \sum_{(\edb, \aux) \in \Y} \prob{\Y = (\edb, \aux)} \sum_{(\db, \aux) \in \X} \sum_{w \in \W} \prob{\X = (\db, \aux) \mid \Y = (\edb, \aux)} \nonumber \\
+  & \prob{\adversary(\secparam, \edb, \aux) = w} g(w, \db) \label{Proof: g-vulnerability and real, equation 4} \\
+\leq & \sum_{(\edb, \aux) \in \Y} \prob{\Y = (\edb, \aux)} \max_{w \in \W} \sum_{(\db, \aux) \in \X}  \prob{\X = (\db, \aux) \mid \Y = (\edb, \aux)} g(w, \db) \label{Proof: g-vulnerability and real, equation 5} \\
+= & \sum_{(\edb, \aux) \in \Y} \max_{w \in \W} \sum_{(\db, \aux) \in \X}  \prob{\X = (\db, \aux), \Y = (\edb, \aux)} g(w, \db) \label{Proof: g-vulnerability and real, equation 6} \\
+= & \sum_{(\edb, \aux) \in \Y} \max_{w \in \W} \sum_{(\db, \aux) \in \X} \prob{\X = (\db, \aux)} \prob{\Y = (\edb, \aux) \mid \X = (\db, \aux)} g(w, \db) \label{Proof: g-vulnerability and real, equation 7} \\
+= & \sum_{(\edb, \aux) \in \Y} \prob{\Y = (\edb, \aux)} \max_{w \in \W} \sum_{(\db, \aux) \in \X} \pi[(\db, \aux)]  \channel[(\db, \aux), (\edb, \aux)] g(w, \db) \label{Proof: g-vulnerability and real, equation 8} \\
+= & V_{g}(\pi, \channel) .
+\end{align}
+
+Going from equation \ref{Proof: g-vulnerability and real, equation 1} to equation \ref{Proof: g-vulnerability and real, equation 2}, we rewrite the expectation of real experiment as expectation of the gain function over randomness of $\Pi$ and the adversary $\adversary$. To derive equation \ref{Proof: g-vulnerability and real, equation 3}, we use tower rule and consider conditional expectation over all possible observed tuples of $(\edb, \aux)$. Equation \ref{Proof: g-vulnerability and real, equation 4} expands equation \ref{Proof: g-vulnerability and real, equation 3} into summations. From optimisation, we know there is a deterministic strategy for the adversary $\adversary$ to maximise the function, hence we can convert supremum over adversaries into an adversary who deterministically pick a guess for each observed $(\edb, \aux)$ as of equation \ref{Proof: g-vulnerability and real, equation 5}, the reason why we have inequality between the equations is due to the fact that the deterministic strategy may not be polynomial in time and size. Equation \ref{Proof: g-vulnerability and real, equation 6} brings $\prob{\Y = (\edb, \aux)}$ into the inner summation, and equation \ref{Proof: g-vulnerability and real, equation 7} rewrites $ \prob{\X = (\db, \aux), \Y = (\edb, \aux)}$ into conditional probability over $\X$. Finally, we realise the probabilities are in the desired forms in posterior g-vulnerability and the inequality is proven.
+\end{proof}
+
+
+We may not use this theorem often as the real game is hard to reason about. However, using a very similar argument as the proof above, we can bound supremum of ideal game with some posterior g-vulnerability.
+
+
+\begin{theorem}[Posterior g-Vulnerability and Ideal Game]
+	\normalfont
+	Let $\secparam$ be the security parameter of some $\leakm$-SS-CKA secure SSE scheme with simulator $\simer$, and $\Pi$ be the prior distribution on databases and auxiliary information. Let $\pi$ be prior distribution on databases induced by $\Pi$. Let $\X = \{ (\db, \aux) \mid (\db, \aux) \in \Pi \}$ and $\Y = \{(\edb, \aux) \mid (\db, \aux) \in \Pi, \edb \gets \simer(\secparam, \leakm(\pi_1(x))) \}$. Let $\channel: \X \times \Y \rightarrow [0,1]$ be the idealised channel matrix induced between $\X$ and $\Y$, i.e. $\channel(x,y) = \prob{\simer(\secparam, \leakm(\pi_1(x))) = \pi_1(y)}$, where $\pi_1(\cdot)$ is a projection onto the first coordinate, and the probability is taken over internal randomness of $\simer(\cdot)$. Let $\W$ be the set of allowed guesses, and $g:\W \times \DB \rightarrow [0,1]$ be a gain function. Then
+	
+	\begin{equation*}
+	\sup_{\adversary} \expect{\simulator_{\Pi, \adversary, \simer}^{g}(\secparam)} \leq V_{g}(\pi, \channel).
+	\end{equation*}
+\end{theorem}
+
+
+Using the theorem above and corollary \ref{Corollary: computationally indistinguishable expectations}, we can bound the expected gain of the best adversary in the real world by some idealised posterior g-vulnerability.
+
+\begin{corollary}
+	\normalfont
+	Let $\secparam$ be the security parameter of some $\leakm$-SS-CKA secure SSE scheme with simulator $\simer$, and $\Pi$ be the prior distribution on databases and auxiliary information. Let $\pi$ be prior distribution on databases induced by $\Pi$. Let $\X = \{ (\db, \aux) \mid (\db, \aux) \in \Pi \}$ and $\Y = \{(\edb, \aux) \mid (\db, \aux) \in \Pi, \edb \gets \simer(\secparam, \leakm(\pi_1(x))) \}$. Let $\channel: \X \times \Y \rightarrow [0,1]$ be the idealised channel matrix induced between $\X$ and $\Y$, i.e. $\channel(x,y) = \prob{\simer(\secparam, \leakm(\pi_1(x))) = \pi_1(y)}$, where $\pi_1(\cdot)$ is a projection onto the first coordinate, and the probability is taken over internal randomness of $\simer(\cdot)$. Let $\W$ be the set of allowed guesses, and $g:\W \times \DB \rightarrow [0,1]$ be a gain function with the following properties:
+	\begin{enumerate}
+		\item $|g[\W \times \DB]| \in \poly$,
+		\item $\sup_{(w, \db) \in \W \times \DB} |g(w, \db)| \in \poly$.
+	\end{enumerate}
+	Then
+	\begin{equation*}
+	\sup_{\adversary} \expect{\text{Real}_{\Pi, \adversary}^{g}(\secparam)} \leq V_{g}(\pi, \channel) + \negl.
+	\end{equation*}
+\end{corollary}
+
+
+

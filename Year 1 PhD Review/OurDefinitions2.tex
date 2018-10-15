@@ -1,0 +1,33 @@
+\subsection{Our Security Notion}
+In this subsection we will present our security notion. We begin by motivating with a security notion that captures a specific attack known as keyword guessing attack. We then generalise this notion to capture any attack we wish to describe, and refine the notion further to quantify over classes of adversarial knowledges.
+
+
+
+
+\subsubsection{Security Notion for (Passive) Keyword Guessing Attack}
+In keyword guessing attacks in the literature \cite{CCS:NavKamWri15, NDSS:IslKuzKan12, CCS:PouWri16, CCS:CGPR15}, the goal of the adversary is usually to math encrypted keywords or queries to unencrypted keywords. The success of the adversary is measured in terms of percentage of correct matches. Our keyword guessing attack has a slightly different goal and we argue that our goal is more meaningful and practical.
+
+Consider the following SSE scheme where the index is a forward index. Each keyword in the documents is encrypted with some deterministic encryption scheme under the same key. We all know that deterministic encryption leaks frequency but if all documents contains all keywords, then frequency information is no longer relevant. The best adversary with the knowledge of frequencies of underlying plaintexts is not going to guess keywords and their encryptions correctly all the times. On the other hand, a wrong guess does not change the adversary's view on the set of keywords in all of the documents. He guesses the set of keywords in all of the documents correctly with certainty.
+
+We define the goal of adversary in keyword guessing attack to be maximising the number of keywords he guesses correctly for each of the documents. His success is measured by the percentage of keywords he guesses correctly for each of the documents. Abstractly, we can represent how well the adversary has done with a function $g$ between his guess and the actual database. We call this function \textit{gain function}. We can naturally represent the adversary as a security game. We measure security of a scheme given some adversary by the expectation of the game.
+
+\begin{figure}[H]
+	\begin{pchstack}[center]
+		\procedure{\text{Real}$_{\Pi, \adv}^{g}(n)$}{%
+			\pcln (\db, \aux) \sample \Pi \\
+			\pcln \key \sample \kgen(\secparam) \\
+			\pcln \edb \gets \enc(\secparam, \key, \db) \\
+			\pcln w \gets \mathcal{A}(\secparam, \edb, \aux) \\
+			\pcln \pcreturn g(w, \db)
+		}
+	\end{pchstack}
+	\caption{Our real security game.}
+\end{figure}
+
+There is no reason why this gain function should be the only target of the adversary. In general, we can consider any gain function we want.
+
+
+
+
+\subsubsection{Comparison between Our Notion and IND-CKA2}
+Our notion has a very similar structure as the real game of SS-CKA. Both notions starts by picking a database and some auxiliary information and state. It goes through the encryption process and the adversary, based on his view and auxiliary information or state, has to return something. The main differences between the two notions are the follows. First of all, in our notion, the database is drawn from some distribution instead of chosen by the adversary himself. We believe that our model is more realistic as distributions of practical databases are not completely random. If our goal is to protect a specific type of database, we only need to reason that our scheme is secure for the application. Secondly, the state of the adversary is given to him by $\Pi$ instead of letting him control it himself. Since the auxiliary information represent adversarial knowledge, previous notion has no control over what the adversary knows, and the adversary can always just keep the database itself as his auxiliary information. With our notion, one can parametrise auxiliary information and study how different classes of auxiliary information affects security. Moreover, in our game, the adversary outputs his guess and it is measured with the gain function $g$. This gives our game much richer vocabulary than a game returning a single bit. Lastly, we quantify security of a scheme by the expectation of output of our security game. One can imagine this as expected loss of a company if it chooses some scheme. This is easier for practitioners to understand than complicated security notions.
